@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Negocio de Elotes 🌽</title>
+<style>
+body {
+    font-family: Arial;
+    text-align: center;
+    background-color: #111;
+    color: white;
+}
+button {
+    width: 90%;
+    padding: 20px;
+    margin: 8px;
+    font-size: 20px;
+    border-radius: 10px;
+    border: none;
+}
+.producto { background-color: #2ecc71; }
+.combo { background-color: #e67e22; }
+.control { background-color: #3498db; }
+.total {
+    font-size: 30px;
+    margin-top: 15px;
+}
+input {
+    padding: 10px;
+    font-size: 18px;
+    width: 60%;
+    text-align: center;
+}
+.config {
+    background-color: #444;
+}
+.hidden {
+    display: none;
+}
+</style>
+</head>
+<body>
+
+<h2>🌽 Negocio de Elotes 🌽</h2>
+
+<div id="ventas">
+
+<button class="producto" onclick="agregar('elote')">🌽 Elote</button>
+<button class="producto" onclick="agregar('esquite')">🥣 Esquite</button>
+<button class="producto" onclick="agregar('patita')">🐷 Patita</button>
+<button class="producto" onclick="agregar('molleja')">🐔 Molleja</button>
+
+<button class="combo" onclick="agregar('combo_chico')">🔥 Combo Chico</button>
+<button class="combo" onclick="agregar('combo_mediano')">🔥 Combo Mediano</button>
+
+<div class="total">
+TOTAL: $<span id="total">0</span>
+</div>
+
+<br>
+Cliente paga:<br>
+<input type="number" id="paga" placeholder="0">
+
+<div class="total">
+Cambio: $<span id="cambio">0</span>
+</div>
+
+<button class="control" onclick="calcularCambio()">Calcular Cambio</button>
+<button class="control" onclick="reiniciar()">Reiniciar Venta</button>
+
+<br><br>
+<button class="config" onclick="mostrarConfig()">⚙️ Configuración</button>
+
+</div>
+
+<div id="configuracion" class="hidden">
+<h3>Modificar Precios</h3>
+
+Elote: <input type="number" id="precio_elote"><br><br>
+Esquite: <input type="number" id="precio_esquite"><br><br>
+Patita: <input type="number" id="precio_patita"><br><br>
+Molleja: <input type="number" id="precio_molleja"><br><br>
+Combo Chico: <input type="number" id="precio_combo_chico"><br><br>
+Combo Mediano: <input type="number" id="precio_combo_mediano"><br><br>
+
+<button class="control" onclick="guardarPrecios()">Guardar</button>
+<button class="control" onclick="cerrarConfig()">Cerrar</button>
+</div>
+
+<script>
+
+let precios = JSON.parse(localStorage.getItem("precios")) || {
+    elote: 20,
+    esquite: 22,
+    patita: 30,
+    molleja: 30,
+    combo_chico: 30,
+    combo_mediano: 52
+};
+
+let total = 0;
+
+function agregar(producto) {
+    total += precios[producto];
+    document.getElementById("total").innerText = total;
+}
+
+function calcularCambio() {
+    let paga = parseFloat(document.getElementById("paga").value) || 0;
+    let cambio = paga - total;
+    document.getElementById("cambio").innerText = cambio >= 0 ? cambio : 0;
+}
+
+function reiniciar() {
+    total = 0;
+    document.getElementById("total").innerText = 0;
+    document.getElementById("paga").value = "";
+    document.getElementById("cambio").innerText = 0;
+}
+
+function mostrarConfig() {
+    document.getElementById("ventas").classList.add("hidden");
+    document.getElementById("configuracion").classList.remove("hidden");
+
+    document.getElementById("precio_elote").value = precios.elote;
+    document.getElementById("precio_esquite").value = precios.esquite;
+    document.getElementById("precio_patita").value = precios.patita;
+    document.getElementById("precio_molleja").value = precios.molleja;
+    document.getElementById("precio_combo_chico").value = precios.combo_chico;
+    document.getElementById("precio_combo_mediano").value = precios.combo_mediano;
+}
+
+function cerrarConfig() {
+    document.getElementById("ventas").classList.remove("hidden");
+    document.getElementById("configuracion").classList.add("hidden");
+}
+
+function guardarPrecios() {
+    precios.elote = parseFloat(document.getElementById("precio_elote").value);
+    precios.esquite = parseFloat(document.getElementById("precio_esquite").value);
+    precios.patita = parseFloat(document.getElementById("precio_patita").value);
+    precios.molleja = parseFloat(document.getElementById("precio_molleja").value);
+    precios.combo_chico = parseFloat(document.getElementById("precio_combo_chico").value);
+    precios.combo_mediano = parseFloat(document.getElementById("precio_combo_mediano").value);
+
+    localStorage.setItem("precios", JSON.stringify(precios));
+
+    alert("Precios guardados correctamente");
+    cerrarConfig();
+}
+
+</script>
+
+</body>
+</html>
